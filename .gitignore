@@ -1,6 +1,6 @@
-.vscode/
+.vscode
 .env
-.venv/
-.idea/
-.DS_Store/
-neo4j/
+.venv
+.idea
+.DS_Store
+neo4j
