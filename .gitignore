@@ -1,6 +1,7 @@
 .vscode
 .env
 .venv
-.idea
-.DS_Store
-neo4j
+**/.idea
+**/.DS_Store
+**/neo4j
+**/__pycache__
