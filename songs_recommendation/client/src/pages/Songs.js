@@ -8,17 +8,18 @@ const Songs = () => {
   const [songs, setSongs] = useState([]);
   const [filter, setFilter] = useState('');
 
-  const randomSongs = [
-    { id: 1, title: 'Song 1', artist: 'Artist 1' },
-    { id: 2, title: 'Song 2', artist: 'Artist 2' },
-    { id: 3, title: 'Song 3', artist: 'Artist 1' }, 
-  ]
+  // const randomSongs = [
+  //   { id: 1, title: 'Song 1', artist: 'Artist 1' },
+  //   { id: 2, title: 'Song 2', artist: 'Artist 2' },
+  //   { id: 3, title: 'Song 3', artist: 'Artist 1' }, 
+  // ]
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get('https://endpoint');
-        setSongs(response.data);
+        const response = await axios.get('http://127.0.0.1:5000/songs');
+        console.log(response.data)
+        setSongs(response.data.songs);
       } catch (error) {
         console.error('Error fetching songs:', error);
       }
@@ -35,6 +36,8 @@ const Songs = () => {
     song.title.toLowerCase().includes(filter.toLowerCase())
   );
 
+  
+
   return (
     <div>
       <h2 className="text-2xl font-bold mb-4">Song List</h2>
@@ -49,11 +52,17 @@ const Songs = () => {
       />
 
       {/* Display filtered songs */}
-      {randomSongs.map((song) => ( //instead of randomSongs, use filteredSongs when you have the actual data
+      {filteredSongs.map((song) => ( //instead of randomSongs, use filteredSongs when you have the actual data
         <Link key={song.id} to={`/songs/${song.id}`} className="text-decoration-none">
           <Song id={song.id} title={song.title} artist={song.artist} />
         </Link>
       ))}
+      {/* Display filtered songs
+      {songs.map((song) => ( //instead of randomSongs, use filteredSongs when you have the actual data
+        <Link key={song.id} to={`/songs/${song.id}`} className="text-decoration-none">
+          <Song id={song.id} title={song.title} artist={song.artist} />
+        </Link>
+      ))} */}
     </div>
   );
 };

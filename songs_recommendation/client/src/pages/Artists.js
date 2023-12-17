@@ -24,8 +24,8 @@ const Artists = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get('https://endpoint');
-        setArtists(response.data); 
+        const response = await axios.get('http://127.0.0.1:5000/songs/artist');
+        setArtists(response.data.artists); 
       } catch (error) {
         console.error('Error fetching artists:', error);
       } finally {
@@ -44,8 +44,9 @@ const Artists = () => {
     <div>
       <h2 className="text-2xl font-bold mb-4">Artists</h2>
       <ul>
-        {randomArtists.map((artist) => (
+        {artists.map((artist) => (
           <Artist key={artist.id} id={artist.id} name={artist.name} />
+          // <Artist key={artist.id} id={artist.id} name={artist.name} />
         ))}
       </ul>
     </div>
