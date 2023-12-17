@@ -48,6 +48,122 @@ def get_access():
     return response
 
 
+# PUNKT 3
+@app.route("/song/like/<songid>", methods=['GET'])
+def like_song(songid):
+    with driver.session() as session:
+        def session_like_song(tx, songid):
+            print(songid)
+            return tx.run(
+                """
+                    MATCH (s:Song {id: toInteger($songid)})
+                    SET s.likes = s.likes + 1;
+                """,
+                songid=songid
+            )
+        
+        session.execute_write(session_like_song, songid=songid)
+
+        session.close()
+    
+    return {"message": "success"}
+
+
+@app.route("/song/unlike/<songid>", methods=['POST'])
+def unlike_song(songid):
+    with driver.session() as session:
+        def session_unlike_song(tx, songid):
+            return tx.run(
+                """
+                    MATCH (s:Song {id: toInteger($songid)})
+                    SET s.likes = s.likes - 1;
+                """,
+                songid=songid
+            )
+        
+        session.execute_write(session_unlike_song, songid=songid)
+
+        session.close()
+    
+    return {"message": "success"}
+
+
+@app.route("/song/love/<songid>", methods=['GET'])
+def love_song(songid):
+    with driver.session() as session:
+        def session_love_song(tx, songid):
+            return tx.run(
+                """
+                    MATCH (s:Song {id: toInteger($songid)})
+                    SET s.loves = s.loves + 1;
+                """,
+                songid=songid
+            )
+        
+        session.execute_write(session_love_song, songid=songid)
+
+        session.close()
+    
+    return {"message": "success"}
+
+
+@app.route("/song/unlove/<songid>", methods=['GET'])
+def unlove_song(songid):
+    with driver.session() as session:
+        def session_unlove_song(tx, songid):
+            return tx.run(
+                """
+                    MATCH (s:Song {id: toInteger($songid)})
+                    SET s.loves = s.loves - 1;
+                """,
+                songid=songid
+            )
+        
+        session.execute_write(session_unlove_song, songid=songid)
+
+        session.close()
+    
+    return {"message": "success"}
+
+
+@app.route("/song/hate/<songid>", methods=['GET'])
+def hate_song(songid):
+    with driver.session() as session:
+        def session_hate_song(tx, songid):
+            return tx.run(
+                """
+                    MATCH (s:Song {id: toInteger($songid)})
+                    SET s.hates = s.hates + 1;
+                """,
+                songid=songid
+            )
+        
+        session.execute_write(session_hate_song, songid=songid)
+
+        session.close()
+    
+    return {"message": "success"}
+
+
+@app.route("/song/unhate/<songid>", methods=['GET'])
+def unhate_song(songid):
+    with driver.session() as session:
+        def session_unhate_song(tx, songid):
+            return tx.run(
+                """
+                    MATCH (s:Song {id: toInteger($songid)})
+                    SET s.hates = s.hates - 1;
+                """,
+                songid=songid
+            )
+        
+        session.execute_write(session_unhate_song, songid=songid)
+
+        session.close()
+    
+    return {"message": "success"}
+
+
 # PUNKT 5
 @app.route("/user/<userid>", methods=['GET'])
 def get_favourite_songs_by_user(userid):
