@@ -49,7 +49,45 @@ def get_access():
 
 
 # PUNKT 4
+@app.route('/songs', methods=['GET'])
+def get_songs(songid):
+    with driver.session() as session:
+        def session_get_songs(tx, songid):
+            result = tx.run(
+                """
+                    MATCH (s:Song)
+                    RETURN s LIMIT 25;
+                """,
+                songid=songid
+            )
 
+            return [ record["s"] for record in result ]
+        
+        songs = session.execute_read(session_get_songs, songid=songid)
+
+        session.close()
+
+    response_body = {
+        "songs": [
+            {
+                "id": song["id"],
+                "title": song["title"],
+                "likes": song["likes"],
+                "loves": song["loves"],
+                "hates": song["hates"],
+                "compound": song["sentiment_compound"],
+                "angry": song["emotion_Angry"],
+                "happy": song["emotion_Happy"],
+                "surprise": song["emotion_Surprise"],
+                "sad": song["emotion_Sad"],
+                "sentiment": song["sentiment_category"],
+                "views": song["views"]
+            } for song in songs
+        ]
+    }
+
+    response = jsonify(response_body)
+    return response
 
 
 @app.route("/songs/song/like/<songid>", methods=['GET'])
@@ -175,47 +213,6 @@ def get_song_by_id(songid):
                 """
                     MATCH (s:Song {id: toInteger($songid)})
                     RETURN s;
-                """,
-                songid=songid
-            )
-
-            return [ record["s"] for record in result ]
-        
-        songs = session.execute_read(session_get_song_by_id, songid=songid)
-
-        session.close()
-
-    response_body = {
-        "songs": [
-            {
-                "id": song["id"],
-                "title": song["title"],
-                "likes": song["likes"],
-                "loves": song["loves"],
-                "hates": song["hates"],
-                "compound": song["sentiment_compound"],
-                "angry": song["emotion_Angry"],
-                "happy": song["emotion_Happy"],
-                "surprise": song["emotion_Surprise"],
-                "sad": song["emotion_Sad"],
-                "sentiment": song["sentiment_category"],
-                "views": song["views"]
-            } for song in songs
-        ]
-    }
-
-    response = jsonify(response_body)
-    return response
-
-
-@app.route('/songs', methods=['GET'])
-def get_song_by_id(songid):
-    with driver.session() as session:
-        def session_get_song_by_id(tx, songid):
-            result = tx.run(
-                """
-                    MATCH (s:Song)
-                    RETURN s LIMIT 25;
                 """,
                 songid=songid
             )
