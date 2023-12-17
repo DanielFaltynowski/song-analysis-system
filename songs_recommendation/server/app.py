@@ -1,4 +1,4 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 from neo4j import GraphDatabase
 
 app = Flask(__name__)
@@ -13,6 +13,66 @@ def hello_world():
     response_body = {
         "message": "Hello World"
     }
+
+    response = jsonify(response_body)
+    return response
+
+
+# PUNKT 2
+@app.route("/user/login/access")
+def get_access():
+    data = request.get_json()
+    with driver.session() as session:
+        def session_get_access(tx, email, password):
+            result = tx.run(
+                """
+                    MATCH (u:User {email: $email, password: $password})
+                    RETURN u;
+                """,
+                email=email,
+                password=password
+            )
+
+            return [ record["u"] for record in result ]
+        
+        auth = session.execute_read(session_get_access, email=data["email"], password=data["password"])
+    
+    response_body = {}
+
+    if len(auth) == 0:
+        response_body["auth"] = False
+    else:
+        response_body["auth"] = True
+    
+    response = jsonify(response_body)
+    return response
+
+
+# PUNKT 5
+@app.route("/user/<userid>", methods=['GET'])
+def get_favourite_songs_by_user(userid):
+    with driver.session() as session:
+        def session_get_favourite_songs_by_user(tx, userid):
+            result = tx.run(
+                """
+                    MATCH (u:User {id: toInteger($userid)})
+                    MATCH (u)-[:LOVED]->(s:Song)
+                    RETURN s;
+                """,
+                userid=userid
+            )
+
+            return [ record["s"] for record in result ]
+        
+        songs = session.execute_read(session_get_favourite_songs_by_user, userid=userid)
+        print(songs)
+        session.close()
+
+    response_body = {
+        "songs": [ { "id": song["id"], "name": song["title"] } for song in songs ]
+    }
+
+    print(response_body)
 
     response = jsonify(response_body)
     return response

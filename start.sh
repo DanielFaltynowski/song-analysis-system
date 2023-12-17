@@ -5,6 +5,6 @@ echo "Wait 30 seconds to run database! . . .";
 sleep 30;
 python songs_recommendation/neo4j/creator.py;
 
-echo "Wait 30 seconds to run server! . . ."
-sleep 30;
+echo "Wait 10 seconds to run server! . . ."
+sleep 10;
 flask --app songs_recommendation/server/app.py run;
