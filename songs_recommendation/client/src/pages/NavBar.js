@@ -6,12 +6,13 @@ import { AuthProvider, useAuth } from '../context/AuthContext.js';
 const Navbar = () => {
   const { isLoggedIn, logout } = useAuth();
   return (
-    <nav className="bg-green p-4">
+    <nav className="bg-emerald-700 p-4">
       <div className="container mx-auto flex justify-between items-center">
+        <div className="flex">
         <NavLink to="/" className="text-white text-xl font-bold" activeClassName="text-yellow-500">
-          RhythmicLlama
+          RhythmaLlama
         </NavLink>
-
+        </div>
         <div className="flex space-x-4">
           {isLoggedIn ? (
             <>

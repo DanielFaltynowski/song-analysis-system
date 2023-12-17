@@ -9,7 +9,6 @@ module.exports = {
         gray: '#545b6b',
         blue: '#ceeaf7',
         lavender: '#d5c9df',
-        pink: '#dcb8cb',
         green: '#6cb298',
       },
     },
