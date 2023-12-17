@@ -1,7 +1,9 @@
 from flask import Flask, jsonify, request
 from neo4j import GraphDatabase
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app)
 
 driver = GraphDatabase.driver('neo4j://localhost:7687')
 driver.verify_connectivity()
@@ -50,20 +52,19 @@ def get_access():
 
 # PUNKT 4
 @app.route('/songs', methods=['GET'])
-def get_songs(songid):
+def get_songs():
     with driver.session() as session:
-        def session_get_songs(tx, songid):
+        def session_get_songs(tx):
             result = tx.run(
                 """
                     MATCH (s:Song)
                     RETURN s LIMIT 25;
                 """,
-                songid=songid
             )
 
             return [ record["s"] for record in result ]
         
-        songs = session.execute_read(session_get_songs, songid=songid)
+        songs = session.execute_read(session_get_songs)
 
         session.close()
 
@@ -81,7 +82,8 @@ def get_songs(songid):
                 "surprise": song["emotion_Surprise"],
                 "sad": song["emotion_Sad"],
                 "sentiment": song["sentiment_category"],
-                "views": song["views"]
+                "views": song["views"],
+                "artist": song["artist"]
             } for song in songs
         ]
     }
@@ -237,7 +239,52 @@ def get_song_by_id(songid):
                 "surprise": song["emotion_Surprise"],
                 "sad": song["emotion_Sad"],
                 "sentiment": song["sentiment_category"],
-                "views": song["views"]
+                "views": song["views"],
+                "artist": song["artist"]
+            } for song in songs
+        ]
+    }
+
+    response = jsonify(response_body)
+    return response
+
+
+@app.route('/songs/song/similar/<songid>', methods=['GET'])
+def get_similar_song_by_id(songid):
+    with driver.session() as session:
+        def session_get_similar_song_by_id(tx, songid):
+            result = tx.run(
+                """
+                    MATCH (s:Song {id: toInteger($songid)})<-[:CLASSIFICATION]-(c:Cluster)
+                    MATCH (c)-[:CLASSIFICATION]->(d:Song)<-[:SANG]-(a:Artist)
+                    RETURN a, d LIMIT 25;
+                """,
+                songid=songid
+            )
+
+            return [ record["d"] for record in result ]
+            # return [ {"a":record["a"], "d":record["d"]} for record in result ]
+        
+        songs = session.execute_read(session_get_similar_song_by_id, songid=songid)
+
+        session.close()
+
+    response_body = {
+        "songs": [
+            {
+                "id": song["id"],
+                "title": song["title"],
+                "likes": song["likes"],
+                "loves": song["loves"],
+                "hates": song["hates"],
+                "compound": song["sentiment_compound"],
+                "angry": song["emotion_Angry"],
+                "happy": song["emotion_Happy"],
+                "surprise": song["emotion_Surprise"],
+                "sad": song["emotion_Sad"],
+                "sentiment": song["sentiment_category"],
+                "views": song["views"],
+                "artist": song["artist"]
             } for song in songs
         ]
     }
@@ -277,16 +324,46 @@ def get_favourite_songs_by_user(userid):
 
 
 # PUNKT 6
+@app.route("/songs/artist", methods=['GET'])
+def get_artists():
+    with driver.session() as session:
+        def session_get_artists(tx):
+            result = tx.run(
+                """
+                    MATCH (a:Artist) RETURN a LIMIT 25;
+                """
+            )
+
+            return [ record["a"] for record in result ]
+        
+        artists = session.execute_read(session_get_artists)
+
+        session.close()
+    
+    response_body = {
+        "artists": [
+            {
+                "id": artist["id"],
+                "name": artist["name"]
+            }
+            for artist in artists
+        ]
+    }
+
+    response = jsonify(response_body)
+    return response
+
+
 @app.route("/songs/artist/<artist>", methods=['GET'])
 def get_songs_by_artist(artist):
     with driver.session() as session:
         def session_get_songs_by_artist(tx, artist):
             result = tx.run(
                 """
-                    MATCH (s:Song)<-[:SANG]-(:Artist {name: $artist})
+                    MATCH (s:Song)<-[:SANG]-(:Artist {id: toInteger($id)})
                     RETURN s;
                 """,
-                artist=artist
+                id=artist
             )
 
             return [ record["s"] for record in result ]
@@ -296,6 +373,7 @@ def get_songs_by_artist(artist):
         session.close()
 
     response_body = {
+        "id": int(artist),
         "songs": [ {"id": song["id"], "title": song["title"]} for song in songs ]
     }
     

@@ -85,16 +85,8 @@ with driver.session() as session:
             """
         )
     
-    def delete_artist_information_from_songs(tx):
-        return tx.run(
-            """
-                MATCH (s:Song)
-                SET s.artist = null;
-            """
-        )
     
     session.execute_write(refactor_artist)
-    session.execute_write(delete_artist_information_from_songs)
 
     session.close()
 
@@ -228,3 +220,14 @@ with driver.session() as session:
     session.execute_write(create_loved_relation_1)
     session.execute_write(create_loved_relation_2)
     session.execute_write(create_loved_relation_3)
+
+
+with driver.session() as session:
+    def set_id_everywhere(tx):
+        return tx.run(
+            """
+                MATCH (n) SET n.id = ID(n);
+            """
+        )
+    
+    session.execute_write(set_id_everywhere)
