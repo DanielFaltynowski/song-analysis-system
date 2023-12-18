@@ -53,11 +53,11 @@ const SongDetails = () => {
   // const similarSongs = songs.filter((song) => song.artist === selectedSong.artist && song.id !== selectedSong.id);
 
   return (
-    <div>
-      <h2 className="text-2xl font-bold mb-4">{selectedSong.title}</h2>
-      <p className="text-gray-600">{selectedSong.artist}</p>
+    <div className='min-h-screen bg-emerald-900'>
+      <h2 className="text-2xl font-bold mb-4 text-white">{selectedSong.title}</h2>
+      <p className="text-white">{selectedSong.artist}</p>
 
-      <h3 className="text-xl font-bold mt-4">Similar Songs</h3>
+      <h3 className="text-xl font-bold mt-4 text-white">Similar Songs</h3>
       {similarSongs.length > 0 ? (
         <div>
           {similarSongs.map((similarSong) => (
