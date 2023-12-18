@@ -15,12 +15,12 @@ const Song = ({ id, title, artist }) => {
   };
 
   return (
-    <div className="border p-4 mb-4">
-      <h3 className="text-lg font-bold">{title}</h3>
+    <div className="border p-4 mb-4 bg-emerald-600">
+      <h3 className="text-lg font-bold text-gray-500">{title}</h3>
       <p className="text-gray-600">{artist}</p>
 
       {/* Button to add to favorites */}
-      <button onClick={addToFavorites} className="bg-blue text-white px-4 py-2 mt-2">
+      <button onClick={addToFavorites} className="bg-pink-600 text-white px-4 py-2 mt-2">
         Add to Favorites
       </button>
     </div>

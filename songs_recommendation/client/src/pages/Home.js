@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import NavBar from './NavBar.js';
+import Top9 from './Top9.js';
 
 const Home = () => {
   return (
@@ -27,7 +27,7 @@ const Home = () => {
           </Link>
         </div>
       </div>
-    </div>
+      </div>
     </div>
   );
 }

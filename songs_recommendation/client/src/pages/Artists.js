@@ -6,21 +6,6 @@ const Artists = () => {
   const [artists, setArtists] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const randomArtists = [
-    {
-      id: 1,
-      name: 'Artist 1',
-    },
-    {
-      id: 2,
-      name: 'Artist 2',
-    },
-    {
-      id: 3,
-      name: 'Artist 3',
-    },
-  ];
-
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -41,8 +26,8 @@ const Artists = () => {
   }
 
   return (
-    <div>
-      <h2 className="text-2xl font-bold mb-4">Artists</h2>
+    <div className='min-h-screen bg-emerald-900'>
+      <h2 className="text-2xl font-bold mb-4 text-white p-4">Artists</h2>
       <ul>
         {artists.map((artist) => (
           <Artist key={artist.id} id={artist.id} name={artist.name} />

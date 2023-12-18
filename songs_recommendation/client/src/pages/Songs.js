@@ -8,12 +8,6 @@ const Songs = () => {
   const [songs, setSongs] = useState([]);
   const [filter, setFilter] = useState('');
 
-  // const randomSongs = [
-  //   { id: 1, title: 'Song 1', artist: 'Artist 1' },
-  //   { id: 2, title: 'Song 2', artist: 'Artist 2' },
-  //   { id: 3, title: 'Song 3', artist: 'Artist 1' }, 
-  // ]
-
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -39,8 +33,8 @@ const Songs = () => {
   
 
   return (
-    <div>
-      <h2 className="text-2xl font-bold mb-4">Song List</h2>
+    <div className=' min-h-screen bg-emerald-900'>
+      <h2 className="text-2xl font-bold mb-4 text-blue p-4 ">Song List</h2>
 
       {/* Filter input */}
       <input
@@ -48,7 +42,7 @@ const Songs = () => {
         placeholder="Filter by title"
         value={filter}
         onChange={handleFilterChange}
-        className="mb-4 p-2 border rounded-md"
+        className="mb-4 p-2 border rounded-md ml-4"
       />
 
       {/* Display filtered songs */}
