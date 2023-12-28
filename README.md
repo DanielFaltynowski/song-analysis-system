@@ -4,7 +4,7 @@ You have to run two separate terminals.
 
 ### Terminal 1
 ```bash
-flask --app ../server/app.py run;
+flask --app songs_recommendation/server/app.py run;
 ```
 
 ### Terminal 2
