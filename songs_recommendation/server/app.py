@@ -91,7 +91,8 @@ with GraphDatabase.driver(uri, auth=(user, password)) as driver:
                     "sad": song["emotion_Sad"],
                     "sentiment": song["sentiment_category"],
                     "views": song["views"],
-                    "artist": song["artist"]
+                    "artist": song["artist"],
+                    "artist_id": song["artist_id"]
                 } for song in songs
             ]
         }
@@ -248,7 +249,8 @@ with GraphDatabase.driver(uri, auth=(user, password)) as driver:
                     "sad": song["emotion_Sad"],
                     "sentiment": song["sentiment_category"],
                     "views": song["views"],
-                    "artist": song["artist"]
+                    "artist": song["artist"],
+                    "artist_id": song["artist_id"]
                 } for song in songs
             ]
         }
@@ -270,8 +272,9 @@ with GraphDatabase.driver(uri, auth=(user, password)) as driver:
                     songid=songid
                 )
 
-                return [ record["d"] for record in result ]
-                # return [ {"a":record["a"], "d":record["d"]} for record in result ]
+                d = [ record["d"] for record in result ]
+
+                return d
             
             songs = session.execute_read(session_get_similar_song_by_id, songid=songid)
 
@@ -292,7 +295,8 @@ with GraphDatabase.driver(uri, auth=(user, password)) as driver:
                     "sad": song["emotion_Sad"],
                     "sentiment": song["sentiment_category"],
                     "views": song["views"],
-                    "artist": song["artist"]
+                    "artist": song["artist"],
+                    "artist_id": song["artist_id"]
                 } for song in songs
             ]
         }

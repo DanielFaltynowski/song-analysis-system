@@ -1,7 +1,7 @@
 // SongDetails.js
 import React from 'react';
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import Song from './Song';
 import axios from 'axios';
 
@@ -46,7 +46,7 @@ const SongDetails = () => {
   const selectedSong = songs.find((song) => song.id.toString() === id);
 
   if (!selectedSong) {
-    return <div>Song not found</div>;
+    return <div>LOADING . . .</div>;
   }
 
   // Find similar songs based on the same artist (adjust criteria as needed)
@@ -54,15 +54,34 @@ const SongDetails = () => {
 
   return (
     <div className='min-h-screen bg-emerald-900'>
-      <h2 className="text-2xl font-bold mb-4 text-white">{selectedSong.title}</h2>
-      <p className="text-white">{selectedSong.artist}</p>
+      <div className='display flex justify-center p-10'>
+        <div className='h-60 w-60 bg-emerald-200 rounded-lg b-black p-5'>
+          
+        </div>
+        <div className='display flex-wrap p-5'>
+          <h2 className="text-2xl font-bold mb-4 text-white">{selectedSong.title}</h2>
+          <Link key={selectedSong.artist} to={`/artists/${selectedSong.artist_id}`}>
+            <p className="text-white">{selectedSong.artist}</p>
+          </Link>
+        </div>
+      </div>
+
 
       <h3 className="text-xl font-bold mt-4 text-white">Similar Songs</h3>
       {similarSongs.length > 0 ? (
         <div>
-          {similarSongs.map((similarSong) => (
-            <Song key={similarSong.id} id={similarSong.id} title={similarSong.title} artist={similarSong.artist} />
+              {/* Display filtered songs */}
+          {similarSongs.map((song) => ( //instead of randomSongs, use filteredSongs when you have the actual data
+            <Link key={song.id} to={`/songs/${song.id}`} className="text-decoration-none">
+              <Song id={song.id} title={song.title} artist={song.artist} />
+            </Link>
           ))}
+          {/* {similarSongs.map((song) => (
+            <Link key={song.id} to={`/songs/${song.id}`} className="text-decoration-none">
+              <Song id={song.id} title={song.title} artist={song.artist} />
+            </Link>
+            // <Song key={similarSong.id} id={similarSong.id} title={similarSong.title} artist={similarSong.artist} />
+          ))} */}
         </div>
       ) : (
         <p>No similar songs found.</p>
