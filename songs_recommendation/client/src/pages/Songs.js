@@ -49,13 +49,14 @@ const Songs = () => {
         onChange={handleFilterChange}
         className="mb-4 p-2 border rounded-md ml-4"
       />
-
-      {/* Display filtered songs */}
-      {filteredSongs.map((song) => ( //instead of randomSongs, use filteredSongs when you have the actual data
-        <Link key={song.id} to={`/songs/${song.id}`} className="text-decoration-none">
-          <Song id={song.id} title={song.title} artist={song.artist} />
-        </Link>
-      ))}
+      <div className="grid grid-cols-4 gap-y-4">
+        {/* Display filtered songs */}
+        {filteredSongs.map((song) => ( //instead of randomSongs, use filteredSongs when you have the actual data
+          <Link key={song.id} to={`/songs/${song.id}`} className="text-decoration-none row-span-1">
+            <Song id={song.id} title={song.title} artist={song.artist} />
+          </Link>
+        ))}
+      </div>
     </div>
   );
 };

@@ -69,19 +69,13 @@ const SongDetails = () => {
 
       <h3 className="text-xl font-bold mt-4 text-white">Similar Songs</h3>
       {similarSongs.length > 0 ? (
-        <div>
+        <div className='grid grid-cols-4 gap-y-4'>
               {/* Display filtered songs */}
           {similarSongs.map((song) => ( //instead of randomSongs, use filteredSongs when you have the actual data
             <Link key={song.id} to={`/songs/${song.id}`} className="text-decoration-none">
               <Song id={song.id} title={song.title} artist={song.artist} />
             </Link>
           ))}
-          {/* {similarSongs.map((song) => (
-            <Link key={song.id} to={`/songs/${song.id}`} className="text-decoration-none">
-              <Song id={song.id} title={song.title} artist={song.artist} />
-            </Link>
-            // <Song key={similarSong.id} id={similarSong.id} title={similarSong.title} artist={similarSong.artist} />
-          ))} */}
         </div>
       ) : (
         <p>No similar songs found.</p>
