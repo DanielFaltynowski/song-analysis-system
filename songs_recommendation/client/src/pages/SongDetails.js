@@ -5,6 +5,25 @@ import { useParams, Link } from 'react-router-dom';
 import Song from './Song';
 import axios from 'axios';
 
+const fisherYatesShuffle = (array) => {
+  let currentIndex = array.length, temporaryValue, randomIndex;
+
+  // While there remain elements to shuffle
+  while (currentIndex !== 0) {
+
+    // Pick a remaining element
+    randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex--;
+
+    // Swap it with the current element
+    temporaryValue = array[currentIndex];
+    array[currentIndex] = array[randomIndex];
+    array[randomIndex] = temporaryValue;
+  }
+
+  return array;
+}
+
 const SongDetails = () => {
   const { id } = useParams();
 
@@ -27,8 +46,8 @@ const SongDetails = () => {
         const artistResponse = await axios.get(`http://127.0.0.1:5000/songs/song/${id}`);
         const getSimilarSongs = await axios.get(`http://127.0.0.1:5000/songs/song/similar/${id}`);
         setArtist(artistResponse.data.id);
-        setSongs(artistResponse.data.songs);
-        setSimilarSongs(getSimilarSongs.data.songs);
+        setSongs(fisherYatesShuffle(artistResponse.data.songs));
+        setSimilarSongs(fisherYatesShuffle(getSimilarSongs.data.songs));
 
         // const songsResponse = await axios.get(`http://127.0.0.1:5000/songs/artist/${artistId}`);
         // setSongs(songsResponse.data.songs);

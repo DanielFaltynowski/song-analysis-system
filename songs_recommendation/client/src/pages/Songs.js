@@ -4,6 +4,25 @@ import axios from 'axios';
 import { Link } from 'react-router-dom';
 import Song from './Song';
 
+const fisherYatesShuffle = (array) => {
+  let currentIndex = array.length, temporaryValue, randomIndex;
+
+  // While there remain elements to shuffle
+  while (currentIndex !== 0) {
+
+    // Pick a remaining element
+    randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex--;
+
+    // Swap it with the current element
+    temporaryValue = array[currentIndex];
+    array[currentIndex] = array[randomIndex];
+    array[randomIndex] = temporaryValue;
+  }
+
+  return array;
+}
+
 const Songs = () => {
   const [songs, setSongs] = useState([]);
   const [filter, setFilter] = useState('');
@@ -14,11 +33,11 @@ const Songs = () => {
       try {
         const response = await axios.get('http://127.0.0.1:5000/songs');
         console.log(response.data)
-        setSongs(response.data.songs);
+        setSongs(fisherYatesShuffle(response.data.songs));
       } catch (error) {
         console.error('Error fetching songs:', error);
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
     };
 
