@@ -66,7 +66,7 @@ with GraphDatabase.driver(uri, auth=(user, password)) as driver:
                 result = tx.run(
                     """
                         MATCH (s:Song)
-                        RETURN s LIMIT 25;
+                        RETURN s ORDER BY RAND() LIMIT 25;
                     """,
                 )
 
@@ -134,44 +134,6 @@ with GraphDatabase.driver(uri, auth=(user, password)) as driver:
                 )
             
             session.execute_write(session_unlike_song, songid=songid)
-
-            session.close()
-        
-        return {"message": "success"}
-
-
-    @app.route("/songs/song/love/<songid>", methods=['GET'])
-    def love_song(songid):
-        with driver.session() as session:
-            def session_love_song(tx, songid):
-                return tx.run(
-                    """
-                        MATCH (s:Song {id: toInteger($songid)})
-                        SET s.loves = s.loves + 1;
-                    """,
-                    songid=songid
-                )
-            
-            session.execute_write(session_love_song, songid=songid)
-
-            session.close()
-        
-        return {"message": "success"}
-
-
-    @app.route("/songs/song/unlove/<songid>", methods=['GET'])
-    def unlove_song(songid):
-        with driver.session() as session:
-            def session_unlove_song(tx, songid):
-                return tx.run(
-                    """
-                        MATCH (s:Song {id: toInteger($songid)})
-                        SET s.loves = s.loves - 1;
-                    """,
-                    songid=songid
-                )
-            
-            session.execute_write(session_unlove_song, songid=songid)
 
             session.close()
         
@@ -261,13 +223,14 @@ with GraphDatabase.driver(uri, auth=(user, password)) as driver:
 
     @app.route('/songs/song/similar/<songid>', methods=['GET'])
     def get_similar_song_by_id(songid):
+        songs = []
         with driver.session() as session:
-            def session_get_similar_song_by_id(tx, songid):
+            def session_get_similar_song_by_id_point_one(tx, songid):
                 result = tx.run(
                     """
                         MATCH (s:Song {id: toInteger($songid)})<-[:CLASSIFICATION]-(c:Cluster)
                         MATCH (c)-[:CLASSIFICATION]->(d:Song)<-[:SANG]-(a:Artist)
-                        RETURN a, d LIMIT 25;
+                        RETURN a, d ORDER BY RAND() LIMIT 15;
                     """,
                     songid=songid
                 )
@@ -276,7 +239,68 @@ with GraphDatabase.driver(uri, auth=(user, password)) as driver:
 
                 return d
             
-            songs = session.execute_read(session_get_similar_song_by_id, songid=songid)
+            req1 = session.execute_read(session_get_similar_song_by_id_point_one, songid=songid)
+            songs = songs + req1
+
+            # session.close()
+        
+            def session_get_similar_song_by_id_point_two(tx, songid):
+                result = tx.run(
+                    """
+                        MATCH (s:Song {id: toInteger($songid)})<-[:SANG]-(a:Artist)-[:SANG]->(d:Song)
+                        RETURN d ORDER BY RAND() LIMIT 15;
+                    """,
+                    songid=songid
+                )
+
+                d = [ record["d"] for record in result ]
+
+                return d
+            
+            req2 = session.execute_read(session_get_similar_song_by_id_point_two, songid=songid)
+            songs = songs + req2
+
+            # session.close()
+        
+
+            # def session_get_similar_song_by_id_point_three(tx, songid):
+            #     result = tx.run(
+            #         """
+            #             MATCH (s:Song {title: "See See Rider"})<-[:SANG]-(a:Artist)-[:SANG]->(d:Song)
+            #             RETURN d ORDER BY RAND() LIMIT 15;
+            #         """,
+            #         songid=songid
+            #     )
+
+            #     d = [ record["d"] for record in result ]
+
+            #     return d
+            
+            # temp = session.execute_read(session_get_similar_song_by_id_point_three, songid=songid)
+            # songs = songs + temp
+
+            # session.close()
+        
+            def session_get_similar_song_by_id_point_four(tx, songid):
+                result = tx.run(
+                    """
+                        MATCH (s:Song {id: toInteger($songid)})-[:TAGGED]-(t:Tag)
+                        MATCH (s)-[:RELEASED_IN]-(y:Year)
+                        MATCH (s)-[:DECADE]-(d:Decade)
+                        WITH s, t, y, d
+                        MATCH (d)-[r1]-(n:Song)-[r2]-(t)
+                        MATCH (n)--(y)
+                        RETURN n ORDER BY RAND() LIMIT 5;
+                    """,
+                    songid=songid
+                )
+
+                n = [ record["n"] for record in result ]
+
+                return n
+            
+            req4 = session.execute_read(session_get_similar_song_by_id_point_four, songid=songid)
+            songs = songs + req4
 
             session.close()
 

@@ -27,18 +27,10 @@ const fisherYatesShuffle = (array) => {
 const SongDetails = () => {
   const { id } = useParams();
 
-  // const songs = [
-  //   { id: 1, title: 'Song 1', artist: 'Artist 1' },
-  //   { id: 2, title: 'Song 2', artist: 'Artist 2' },
-  //   { id: 3, title: 'Song 3', artist: 'Artist 1' }, 
-  // ];
-
   const [artist, setArtist] = useState({});
   const [songs, setSongs] = useState([]);
   const [similarSongs, setSimilarSongs] = useState([]);
   const [loading, setLoading] = useState(true);
-
-  // console.log(artistId)
 
   useEffect(() => {
     const fetchData = async () => {
@@ -48,9 +40,7 @@ const SongDetails = () => {
         setArtist(artistResponse.data.id);
         setSongs(fisherYatesShuffle(artistResponse.data.songs));
         setSimilarSongs(fisherYatesShuffle(getSimilarSongs.data.songs));
-
-        // const songsResponse = await axios.get(`http://127.0.0.1:5000/songs/artist/${artistId}`);
-        // setSongs(songsResponse.data.songs);
+        // setSimilarSongs(getSimilarSongs.data.songs);
       } catch (error) {
         console.error('Error fetching artist details:', error);
       } finally {
