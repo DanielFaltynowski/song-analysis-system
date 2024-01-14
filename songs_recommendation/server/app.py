@@ -4,6 +4,24 @@ from flask_cors import CORS
 from dotenv import load_dotenv
 import os
 
+# TABLE OF CONTENT
+
+# def get_access(): LINE 48
+# def get_songs(): LINE 77
+# def like_song(songid): LINE 119
+# def unlike_song(songid): LINE 139
+# def get_song_by_id(songid): LINE 158
+# def get_similar_song_by_id(songid): LINE 201
+# def get_favourite_songs_by_user(userid): LINE 288
+# def add_song_to_favourite(userid, songid): LINE 317
+# def remove_song_from_favourite(userid, songid): LINE 338
+# def get_artists(): LINE 360
+# def get_songs_by_artist(artist): LINE 390
+# def get_songs_by_tag(tag): LINE 417
+
+
+
+
 app = Flask(__name__)
 CORS(app)
 
@@ -17,7 +35,6 @@ with GraphDatabase.driver(uri, auth=(user, password)) as driver:
     driver.verify_connectivity()
 
 
-    # PUNKT 1
     @app.route("/", methods=['GET'])
     def hello_world():
         response_body = {
@@ -28,7 +45,6 @@ with GraphDatabase.driver(uri, auth=(user, password)) as driver:
         return response
 
 
-    # PUNKT 2
     @app.route("/user/login/access")
     def get_access():
         data = request.get_json()
@@ -58,7 +74,6 @@ with GraphDatabase.driver(uri, auth=(user, password)) as driver:
         return response
 
 
-    # PUNKT 4
     @app.route('/songs', methods=['GET'])
     def get_songs():
         with driver.session() as session:
@@ -140,44 +155,6 @@ with GraphDatabase.driver(uri, auth=(user, password)) as driver:
         return {"message": "success"}
 
 
-    @app.route("/songs/song/hate/<songid>", methods=['GET'])
-    def hate_song(songid):
-        with driver.session() as session:
-            def session_hate_song(tx, songid):
-                return tx.run(
-                    """
-                        MATCH (s:Song {id: toInteger($songid)})
-                        SET s.hates = s.hates + 1;
-                    """,
-                    songid=songid
-                )
-            
-            session.execute_write(session_hate_song, songid=songid)
-
-            session.close()
-        
-        return {"message": "success"}
-
-
-    @app.route("/songs/song/unhate/<songid>", methods=['GET'])
-    def unhate_song(songid):
-        with driver.session() as session:
-            def session_unhate_song(tx, songid):
-                return tx.run(
-                    """
-                        MATCH (s:Song {id: toInteger($songid)})
-                        SET s.hates = s.hates - 1;
-                    """,
-                    songid=songid
-                )
-            
-            session.execute_write(session_unhate_song, songid=songid)
-
-            session.close()
-        
-        return {"message": "success"}
-
-
     @app.route('/songs/song/<songid>', methods=['GET'])
     def get_song_by_id(songid):
         with driver.session() as session:
@@ -242,7 +219,6 @@ with GraphDatabase.driver(uri, auth=(user, password)) as driver:
             req1 = session.execute_read(session_get_similar_song_by_id_point_one, songid=songid)
             songs = songs + req1
 
-            # session.close()
         
             def session_get_similar_song_by_id_point_two(tx, songid):
                 result = tx.run(
@@ -260,26 +236,6 @@ with GraphDatabase.driver(uri, auth=(user, password)) as driver:
             req2 = session.execute_read(session_get_similar_song_by_id_point_two, songid=songid)
             songs = songs + req2
 
-            # session.close()
-        
-
-            # def session_get_similar_song_by_id_point_three(tx, songid):
-            #     result = tx.run(
-            #         """
-            #             MATCH (s:Song {title: "See See Rider"})<-[:SANG]-(a:Artist)-[:SANG]->(d:Song)
-            #             RETURN d ORDER BY RAND() LIMIT 15;
-            #         """,
-            #         songid=songid
-            #     )
-
-            #     d = [ record["d"] for record in result ]
-
-            #     return d
-            
-            # temp = session.execute_read(session_get_similar_song_by_id_point_three, songid=songid)
-            # songs = songs + temp
-
-            # session.close()
         
             def session_get_similar_song_by_id_point_four(tx, songid):
                 result = tx.run(
@@ -329,7 +285,6 @@ with GraphDatabase.driver(uri, auth=(user, password)) as driver:
         return response
 
 
-    # PUNKT 5
     @app.route("/user/<userid>", methods=['GET'])
     def get_favourite_songs_by_user(userid):
         with driver.session() as session:
@@ -358,8 +313,7 @@ with GraphDatabase.driver(uri, auth=(user, password)) as driver:
         response = jsonify(response_body)
         return response
 
-    # add song to user's favourite
-    '''
+
     @app.route("/user/<userid>/song/<songid>", methods=['POST'])
     def add_song_to_favourite(userid, songid):
         with driver.session() as session:
@@ -379,10 +333,8 @@ with GraphDatabase.driver(uri, auth=(user, password)) as driver:
             session.close()
         
         return {"message": "success"}
-    '''
 
-    # remove song from user's favourite
-    '''
+
     @app.route("/user/<userid>/song/<songid>", methods=['DELETE'])
     def remove_song_from_favourite(userid, songid):
         with driver.session() as session:
@@ -403,57 +355,8 @@ with GraphDatabase.driver(uri, auth=(user, password)) as driver:
             session.close()
         
         return {"message": "success"}
-    '''
-
-    # add song to hate list
-    '''
-    @app.route("/user/<userid>/song/<songid>", methods=['POST'])
-    def add_song_to_hate_list(userid, songid):
-        with driver.session() as session:
-            def session_add_song_to_hate_list(tx, userid, songid):
-                return tx.run(
-                    """
-                        MATCH (u:User {id: toInteger($userid)})
-                        MATCH (s:Song {id: toInteger($songid)})
-                        MERGE (u)-[:HATED]->(s);
-                    """,
-                    userid=userid,
-                    songid=songid
-                )
-            
-            session.execute_write(session_add_song_to_hate_list, userid=userid, songid=songid)
-
-            session.close()
-        
-        return {"message": "success"}
-    '''
-
-    # remove song from hate list
-    '''
-    @app.route("/user/<userid>/song/<songid>", methods=['DELETE'])
-    def remove_song_from_hate_list(userid, songid):
-        with driver.session() as session:
-            def session_remove_song_from_hate_list(tx, userid, songid):
-                return tx.run(
-                    """
-                        MATCH (u:User {id: toInteger($userid)})
-                        MATCH (s:Song {id: toInteger($songid)})
-                        MATCH (u)-[r:HATED]->(s)
-                        DELETE r;
-                    """,
-                    userid=userid,
-                    songid=songid
-                )
-            
-            session.execute_write(session_remove_song_from_hate_list, userid=userid, songid=songid)
-
-            session.close()
-        
-        return {"message": "success"}
-    '''
 
 
-    # PUNKT 6
     @app.route("/songs/artist", methods=['GET'])
     def get_artists():
         with driver.session() as session:
@@ -511,8 +414,6 @@ with GraphDatabase.driver(uri, auth=(user, password)) as driver:
         return response
 
 
-
-    # PUNKT 7
     @app.route("/songs/tag/<tag>", methods=['GET'])
     def get_songs_by_tag(tag):
         with driver.session() as session:
