@@ -4,7 +4,7 @@ from flask_cors import CORS
 from dotenv import load_dotenv
 import os
 
-# TABLE OF CONTENT
+# TABLE OF CONTENTS
 
 # def get_access(): LINE 48
 # def get_songs(): LINE 77
@@ -438,6 +438,14 @@ with GraphDatabase.driver(uri, auth=(user, password)) as driver:
         
         response = jsonify(response_body)
         return response
+    
+
+    @app.route("/user/login/access", methods=['POST'])
+    def login_user():
+        data_from_request = request.data
+        print(data_from_request)
+        print("wyslamno")
+        return {}
 
 
     if __name__ == '__main__':
