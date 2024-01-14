@@ -123,9 +123,47 @@ with GraphDatabase.driver(uri, auth=(user, password)) as driver:
             def session_get_songs_logged(tx, id):
                 result = tx.run(
                     """
-                        MATCH (s:Song)
-                        RETURN s ORDER BY RAND() LIMIT 25;
+                        MATCH (u:User {id: $id})
+                        MATCH (u)-[:LOVED]-(s:Song)
+                        WITH s LIMIT 5
+                        MATCH (s)-[:CLASSIFICATION]-(c:Cluster)-[:CLASSIFICATION]-(d:Song)
+                        RETURN d ORDER BY RAND() LIMIT 25;
                     """,
+                    id=id
+                )
+
+                return [ record["s"] for record in result ]
+            
+            response = session.execute_read(session_get_songs_logged, id=id)
+            songs = songs + response
+
+            session.close()
+
+        with driver.session() as session:
+            def session_get_songs_logged(tx, id):
+                result = tx.run(
+                    """
+                        MATCH (u:User {id: $id})
+                        MATCH (u)-[:LOVED]-(s:Song)-[:SANG]-(a:Artist)-[:SANG]-(d:Song)
+                        RETURN d ORDER BY RAND() LIMIT 15;
+                    """,
+                    id=id
+                )
+
+                return [ record["s"] for record in result ]
+            
+            response = session.execute_read(session_get_songs_logged, id=id)
+            songs = songs + response
+
+            session.close()
+
+        with driver.session() as session:
+            def session_get_songs_logged(tx, id):
+                result = tx.run(
+                    """
+                        MATCH (s:Song) RETURN s ORDER BY RAND() LIMIT 5;
+                    """,
+                    id=id
                 )
 
                 return [ record["s"] for record in result ]
