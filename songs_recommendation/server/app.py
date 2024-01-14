@@ -473,6 +473,42 @@ with GraphDatabase.driver(uri, auth=(user, password)) as driver:
         response = jsonify(response_body)
         
         return response
+    
+
+    @app.route("/user/register", methods=['POST'])
+    def register_user():
+        json_data = request.get_json()
+        login = json_data.get('email')
+        password = json_data.get('password')
+        with driver.session() as session:
+            def session_register_user1(tx, login, password):
+                result = tx.run(
+                    """
+                        CREATE (u:User {email: $login, password: $password});
+                    """,
+                    login=login,
+                    password=password
+                )
+            
+            session.execute_write(session_register_user1, login=login, password=password)
+
+            session.close()
+        with driver.session() as session:
+            def session_register_user2(tx, login, password):
+                result = tx.run(
+                    """
+                        MATCH (u:User {email: $login, password: $password})
+                        SET u.id = ID(u);
+                    """,
+                    login=login,
+                    password=password
+                )
+            
+            session.execute_write(session_register_user2, login=login, password=password)
+
+            session.close()
+        
+        return {"message": "succesful"}
 
 
     if __name__ == '__main__':
