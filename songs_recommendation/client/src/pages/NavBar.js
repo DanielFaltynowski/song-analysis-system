@@ -1,10 +1,12 @@
 // Navbar.js
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { AuthProvider, useAuth } from '../context/AuthContext.js';
+import { useAuth } from '../context/AuthContext.js';
 
 const Navbar = () => {
-  const { isLoggedIn, logout } = useAuth();
+  const { isLoggedIn, logout, user } = useAuth();
+  console.log(user);
+
   return (
     <nav className="bg-emerald-700 p-4">
       <div className="container mx-auto flex justify-between items-center">
@@ -16,7 +18,7 @@ const Navbar = () => {
         <div className="flex space-x-4">
           {isLoggedIn ? (
             <>
-              <NavLink to="/my-songs" className="text-white" activeClassName="text-yellow-500">
+              <NavLink to={`/user/${user.id}`}  className="text-white" activeClassName="text-yellow-500">
                 My Songs
               </NavLink>
               <button className="text-white" onClick={logout}>

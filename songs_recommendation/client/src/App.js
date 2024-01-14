@@ -9,8 +9,7 @@ import Songs from './pages/Songs.js';
 import SongDetails from './pages/SongDetails.js';
 import Artists from './pages/Artists.js';
 import ArtistDetails from './pages/ArtistDetails.js';
-import Artist from './pages/Artist.js';
-import MySongs from './pages/MySongs.js';
+import User from './pages/User.js';
 
 const App = () => {
   return (
@@ -24,8 +23,7 @@ const App = () => {
         <Route path="/songs/:id" element={<SongDetails />} />
         <Route path="/artists" element={<Artists />} />
         <Route path="/artists/:id" element={<ArtistDetails />} />
-        {/* <Route path="/artists/:id" element={<Artist />} /> */}
-        <Route path="/mysongs" element={<MySongs/>} />
+        <Route path="/user/:id" element={<User />} />
       </Routes>
     </Router>
   );

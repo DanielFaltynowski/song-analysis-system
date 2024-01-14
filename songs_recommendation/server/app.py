@@ -527,33 +527,47 @@ with GraphDatabase.driver(uri, auth=(user, password)) as driver:
         json_data = request.get_json()
         login = json_data.get('email')
         password = json_data.get('password')
+
         with driver.session() as session:
             def session_login_user(tx, login, password):
                 result = tx.run(
                     """
-                        MATCH (u:User {email: $login, password: $password}) RETURN u;
+                    MATCH (u:User {email: $login, password: $password}) RETURN u;
                     """,
                     login=login,
                     password=password
                 )
 
-                return [ record["u"] for record in result ]
-            
+                return [record["u"] for record in result]
+
             auth = session.execute_read(session_login_user, login=login, password=password)
 
-            session.close()
+        # get user id
+        with driver.session() as session:
+            def session_get_user_id(tx, login):
+                result = tx.run(
+                    """
+                    MATCH (u:User {email: $login}) RETURN u.id;
+                    """,
+                    login=login
+                )
 
-        if (len(auth) != 0):
+                return [record["u.id"] for record in result]
+
+            user_id = session.execute_read(session_get_user_id, login=login)
+
+        if len(auth) != 0:
             response_body = {
-                "auth": 1
+                "auth": 1,
+                "id": user_id[0] if user_id else None
             }
         else:
             response_body = {
-                "auth": 0
+                "auth": 0,
+                "id": None
             }
-        
+
         response = jsonify(response_body)
-        
         return response
     
 
