@@ -18,7 +18,7 @@ const Navbar = () => {
         <div className="flex space-x-4">
           {isLoggedIn ? (
             <>
-              <NavLink to={`/user/${user.id}`}  className="text-white" activeClassName="text-yellow-500">
+              <NavLink to={`/user/${user}`}  className="text-white" activeClassName="text-yellow-500">
                 My Songs
               </NavLink>
               <button className="text-white" onClick={logout}>
