@@ -1,5 +1,6 @@
 // Song.js
 import React from 'react';
+import PixelArtComponent from './PixelArtComponent.js';
 import axios from 'axios';
 
 const Song = ({ id, title, artist }) => {
@@ -15,14 +16,24 @@ const Song = ({ id, title, artist }) => {
   };
 
   return (
-    <div className="border p-4 mb-4 bg-emerald-600">
-      <h3 className="text-lg font-bold text-gray-500">{title}</h3>
-      <p className="text-gray-600">{artist}</p>
+    <div className="border p-4 mb-4 bg-emerald-600 max-w-xs text-center rounded-xl display flex justify-center items-center h-full">
+      <div className=''>
+        <div className="bg-emerald-200 h-20 w-20 bg-emerald-200 rounded-lg p-5">
 
-      {/* Button to add to favorites */}
-      <button onClick={addToFavorites} className="bg-pink-600 text-white px-4 py-2 mt-2">
-        Add to Favorites
-      </button>
+        </div>
+      </div>
+      <div className="display flex-wrap p-2 flex-2">
+        <div className='max-w-xs p-1'>
+          <h3 className="text-lg font-bold text-gray-500">{title}</h3>
+          <p className="text-gray-600">{artist}</p>
+
+        </div>
+
+        {/* Button to add to favorites */}
+        <button onClick={addToFavorites} className="bg-pink-600 text-white px-4 py-2 mt-2 rounded-lg">
+          Add to Favorites
+        </button>
+      </div>
     </div>
   );
 };

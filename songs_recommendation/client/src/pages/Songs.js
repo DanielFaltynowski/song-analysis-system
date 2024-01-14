@@ -4,18 +4,40 @@ import axios from 'axios';
 import { Link } from 'react-router-dom';
 import Song from './Song';
 
+const fisherYatesShuffle = (array) => {
+  let currentIndex = array.length, temporaryValue, randomIndex;
+
+  // While there remain elements to shuffle
+  while (currentIndex !== 0) {
+
+    // Pick a remaining element
+    randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex--;
+
+    // Swap it with the current element
+    temporaryValue = array[currentIndex];
+    array[currentIndex] = array[randomIndex];
+    array[randomIndex] = temporaryValue;
+  }
+
+  return array;
+}
+
 const Songs = () => {
   const [songs, setSongs] = useState([]);
   const [filter, setFilter] = useState('');
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await axios.get('http://127.0.0.1:5000/songs');
         console.log(response.data)
-        setSongs(response.data.songs);
+        setSongs(fisherYatesShuffle(response.data.songs));
       } catch (error) {
         console.error('Error fetching songs:', error);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -30,7 +52,9 @@ const Songs = () => {
     song.title.toLowerCase().includes(filter.toLowerCase())
   );
 
-  
+  if (loading) {
+    return (<div>LOADING . . .</div>)
+  }
 
   return (
     <div className=' min-h-screen bg-emerald-900'>
@@ -44,19 +68,14 @@ const Songs = () => {
         onChange={handleFilterChange}
         className="mb-4 p-2 border rounded-md ml-4"
       />
-
-      {/* Display filtered songs */}
-      {filteredSongs.map((song) => ( //instead of randomSongs, use filteredSongs when you have the actual data
-        <Link key={song.id} to={`/songs/${song.id}`} className="text-decoration-none">
-          <Song id={song.id} title={song.title} artist={song.artist} />
-        </Link>
-      ))}
-      {/* Display filtered songs
-      {songs.map((song) => ( //instead of randomSongs, use filteredSongs when you have the actual data
-        <Link key={song.id} to={`/songs/${song.id}`} className="text-decoration-none">
-          <Song id={song.id} title={song.title} artist={song.artist} />
-        </Link>
-      ))} */}
+      <div className="grid grid-cols-4 gap-y-4">
+        {/* Display filtered songs */}
+        {filteredSongs.map((song) => ( //instead of randomSongs, use filteredSongs when you have the actual data
+          <Link key={song.id} to={`/songs/${song.id}`} className="text-decoration-none row-span-1">
+            <Song id={song.id} title={song.title} artist={song.artist} />
+          </Link>
+        ))}
+      </div>
     </div>
   );
 };

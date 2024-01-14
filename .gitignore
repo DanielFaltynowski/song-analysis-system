@@ -5,3 +5,5 @@
 **/.DS_Store
 **/neo4j
 **/__pycache__
+**/node_modules
+**/database

@@ -2,6 +2,25 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import Artist from './Artist';
 
+const fisherYatesShuffle = (array) => {
+  let currentIndex = array.length, temporaryValue, randomIndex;
+
+  // While there remain elements to shuffle
+  while (currentIndex !== 0) {
+
+    // Pick a remaining element
+    randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex--;
+
+    // Swap it with the current element
+    temporaryValue = array[currentIndex];
+    array[currentIndex] = array[randomIndex];
+    array[randomIndex] = temporaryValue;
+  }
+
+  return array;
+}
+
 const Artists = () => {
   const [artists, setArtists] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -10,7 +29,7 @@ const Artists = () => {
     const fetchData = async () => {
       try {
         const response = await axios.get('http://127.0.0.1:5000/songs/artist');
-        setArtists(response.data.artists); 
+        setArtists(fisherYatesShuffle(response.data.artists)); 
       } catch (error) {
         console.error('Error fetching artists:', error);
       } finally {
