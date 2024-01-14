@@ -442,10 +442,37 @@ with GraphDatabase.driver(uri, auth=(user, password)) as driver:
 
     @app.route("/user/login/access", methods=['POST'])
     def login_user():
-        data_from_request = request.data
-        print(data_from_request)
-        print("wyslamno")
-        return {}
+        json_data = request.get_json()
+        login = json_data.get('email')
+        password = json_data.get('password')
+        with driver.session() as session:
+            def session_login_user(tx, login, password):
+                result = tx.run(
+                    """
+                        MATCH (u:User {email: $login, password: $password}) RETURN u;
+                    """,
+                    login=login,
+                    password=password
+                )
+
+                return [ record["u"] for record in result ]
+            
+            auth = session.execute_read(session_login_user, login=login, password=password)
+
+            session.close()
+
+        if (len(auth) != 0):
+            response_body = {
+                "auth": 1
+            }
+        else:
+            response_body = {
+                "auth": 0
+            }
+        
+        response = jsonify(response_body)
+        
+        return response
 
 
     if __name__ == '__main__':
