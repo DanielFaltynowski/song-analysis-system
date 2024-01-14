@@ -1,10 +1,15 @@
-// Login.js
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { useAuth } from '../context/AuthContext'; // Correct import statement
+
 
 const Login = () => {
+  const { login } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [loginError, setLoginError] = useState(null);
+  const [redirect, setRedirect] = useState(false);
 
   const handleEmailChange = (e) => {
     setEmail(e.target.value);
@@ -14,18 +19,35 @@ const Login = () => {
     setPassword(e.target.value);
   };
 
+  const navigate = useNavigate();
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      const response = await axios.post('/user/login/access', { email, password });
+      const response = await axios.post('http://127.0.0.1:5000/user/login/access', { email, password });
       console.log('Login Successful:', response.data);
+
+      if (response.data.auth === 1) {
+        //print 
+        console.log("Login Successful");
+        login(response.data.id);
+        
+        // Use the navigate function to redirect
+        navigate('/');
+      } else {
+        console.log("Login Failed");
+        setLoginError('Invalid credentials');
+      }
+
       setEmail('');
       setPassword('');
     } catch (error) {
       console.error('Login Failed:', error.message);
+      setLoginError('Login failed. Please try again.');
     }
   };
+
 
   return (
     <div className="min-h-screen bg-emerald-900 flex items-center justify-center">

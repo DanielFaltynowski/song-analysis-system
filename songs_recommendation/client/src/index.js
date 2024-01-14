@@ -8,7 +8,7 @@ import { AuthProvider } from './context/AuthContext.js'; // Use curly braces for
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-    <AuthProvider>
+    <AuthProvider >
       <App />
     </AuthProvider>
 );

@@ -35,17 +35,17 @@ const ArtistDetails = () => {
   }, [id]);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <div  className='bg-emerald-900 min-h-screen'>Loading...</div>;
   }
 
   return (
-    <div>
+    <div className='bg-emerald-900 min-h-screen p-4'>
       {/* <h2 className="text-2xl font-bold mb-4">{artistId}</h2> */}
       <h2 className="text-2xl font-bold mb-4">{artist.name}</h2>
       {/* <p>{artist.bio}</p> */}
 
       {/* <h3 className="text-xl font-bold mt-4">Songs by {artistId}</h3> */}
-      <h3 className="text-xl font-bold mt-4">Songs by {artist.name}</h3>
+      <h3 className="text-xl font-bold mt-4 text-white">Songs by {artist.name}</h3>
       {songs.map((song) => (
         <Link key={song.id} to={`/songs/${song.id}`} className="text-decoration-none">
           <Song id={song.id} title={song.title} artist={song.artist} />
