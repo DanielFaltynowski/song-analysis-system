@@ -45,33 +45,33 @@ with GraphDatabase.driver(uri, auth=(user, password)) as driver:
         return response
 
 
-    @app.route("/user/login/access")
-    def get_access():
-        data = request.get_json()
-        with driver.session() as session:
-            def session_get_access(tx, email, password):
-                result = tx.run(
-                    """
-                        MATCH (u:User {email: $email, password: $password})
-                        RETURN u;
-                    """,
-                    email=email,
-                    password=password
-                )
+    # @app.route("/user/login/access")
+    # def get_access():
+    #     data = request.get_json()
+    #     with driver.session() as session:
+    #         def session_get_access(tx, email, password):
+    #             result = tx.run(
+    #                 """
+    #                     MATCH (u:User {email: $email, password: $password})
+    #                     RETURN u;
+    #                 """,
+    #                 email=email,
+    #                 password=password
+    #             )
 
-                return [ record["u"] for record in result ]
+    #             return [ record["u"] for record in result ]
             
-            auth = session.execute_read(session_get_access, email=data["email"], password=data["password"])
+    #         auth = session.execute_read(session_get_access, email=data["email"], password=data["password"])
         
-        response_body = {}
+    #     response_body = {}
 
-        if len(auth) == 0:
-            response_body["auth"] = False
-        else:
-            response_body["auth"] = True
+    #     if len(auth) == 0:
+    #         response_body["auth"] = False
+    #     else:
+    #         response_body["auth"] = True
         
-        response = jsonify(response_body)
-        return response
+    #     response = jsonify(response_body)
+    #     return response
 
 
     @app.route('/songs', methods=['GET'])
@@ -88,6 +88,50 @@ with GraphDatabase.driver(uri, auth=(user, password)) as driver:
                 return [ record["s"] for record in result ]
             
             songs = session.execute_read(session_get_songs)
+
+            session.close()
+
+        response_body = {
+            "songs": [
+                {
+                    "id": song["id"],
+                    "title": song["title"],
+                    "likes": song["likes"],
+                    "loves": song["loves"],
+                    "hates": song["hates"],
+                    "compound": song["sentiment_compound"],
+                    "angry": song["emotion_Angry"],
+                    "happy": song["emotion_Happy"],
+                    "surprise": song["emotion_Surprise"],
+                    "sad": song["emotion_Sad"],
+                    "sentiment": song["sentiment_category"],
+                    "views": song["views"],
+                    "artist": song["artist"],
+                    "artist_id": song["artist_id"]
+                } for song in songs
+            ]
+        }
+
+        response = jsonify(response_body)
+        return response
+    
+
+    @app.route('/songs/logged/<id>', methods=['GET'])
+    def get_songs_logged(id):
+        songs = []
+        with driver.session() as session:
+            def session_get_songs_logged(tx, id):
+                result = tx.run(
+                    """
+                        MATCH (s:Song)
+                        RETURN s ORDER BY RAND() LIMIT 25;
+                    """,
+                )
+
+                return [ record["s"] for record in result ]
+            
+            response = session.execute_read(session_get_songs_logged, id=id)
+            songs = songs + response
 
             session.close()
 
