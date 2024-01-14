@@ -358,6 +358,100 @@ with GraphDatabase.driver(uri, auth=(user, password)) as driver:
         response = jsonify(response_body)
         return response
 
+    # add song to user's favourite
+    '''
+    @app.route("/user/<userid>/song/<songid>", methods=['POST'])
+    def add_song_to_favourite(userid, songid):
+        with driver.session() as session:
+            def session_add_song_to_favourite(tx, userid, songid):
+                return tx.run(
+                    """
+                        MATCH (u:User {id: toInteger($userid)})
+                        MATCH (s:Song {id: toInteger($songid)})
+                        MERGE (u)-[:LOVED]->(s);
+                    """,
+                    userid=userid,
+                    songid=songid
+                )
+            
+            session.execute_write(session_add_song_to_favourite, userid=userid, songid=songid)
+
+            session.close()
+        
+        return {"message": "success"}
+    '''
+
+    # remove song from user's favourite
+    '''
+    @app.route("/user/<userid>/song/<songid>", methods=['DELETE'])
+    def remove_song_from_favourite(userid, songid):
+        with driver.session() as session:
+            def session_remove_song_from_favourite(tx, userid, songid):
+                return tx.run(
+                    """
+                        MATCH (u:User {id: toInteger($userid)})
+                        MATCH (s:Song {id: toInteger($songid)})
+                        MATCH (u)-[r:LOVED]->(s)
+                        DELETE r;
+                    """,
+                    userid=userid,
+                    songid=songid
+                )
+            
+            session.execute_write(session_remove_song_from_favourite, userid=userid, songid=songid)
+
+            session.close()
+        
+        return {"message": "success"}
+    '''
+
+    # add song to hate list
+    '''
+    @app.route("/user/<userid>/song/<songid>", methods=['POST'])
+    def add_song_to_hate_list(userid, songid):
+        with driver.session() as session:
+            def session_add_song_to_hate_list(tx, userid, songid):
+                return tx.run(
+                    """
+                        MATCH (u:User {id: toInteger($userid)})
+                        MATCH (s:Song {id: toInteger($songid)})
+                        MERGE (u)-[:HATED]->(s);
+                    """,
+                    userid=userid,
+                    songid=songid
+                )
+            
+            session.execute_write(session_add_song_to_hate_list, userid=userid, songid=songid)
+
+            session.close()
+        
+        return {"message": "success"}
+    '''
+
+    # remove song from hate list
+    '''
+    @app.route("/user/<userid>/song/<songid>", methods=['DELETE'])
+    def remove_song_from_hate_list(userid, songid):
+        with driver.session() as session:
+            def session_remove_song_from_hate_list(tx, userid, songid):
+                return tx.run(
+                    """
+                        MATCH (u:User {id: toInteger($userid)})
+                        MATCH (s:Song {id: toInteger($songid)})
+                        MATCH (u)-[r:HATED]->(s)
+                        DELETE r;
+                    """,
+                    userid=userid,
+                    songid=songid
+                )
+            
+            session.execute_write(session_remove_song_from_hate_list, userid=userid, songid=songid)
+
+            session.close()
+        
+        return {"message": "success"}
+    '''
+
 
     # PUNKT 6
     @app.route("/songs/artist", methods=['GET'])
