@@ -8,17 +8,18 @@ import os
 
 # def get_access(): LINE 48
 # def get_songs(): LINE 77
-# def like_song(songid): LINE 119
-# def unlike_song(songid): LINE 139
-# def get_song_by_id(songid): LINE 158
-# def get_similar_song_by_id(songid): LINE 201
-# def get_favourite_songs_by_user(userid): LINE 288
-# def add_song_to_favourite(userid, songid): LINE 317
-# def remove_song_from_favourite(userid, songid): LINE 338
-# def get_artists(): LINE 360
-# def get_songs_by_artist(artist): LINE 390
-# def get_songs_by_tag(tag): LINE 417
-
+# def get_songs_logged(id): LINE 120
+# def like_song(songid): LINE 202
+# def unlike_song(songid): LINE 222
+# def get_song_by_id(songid): LINE 284
+# def get_favourite_songs_by_user(userid): LINE 371
+# def add_song_to_favourite(userid, songid): LINE 399
+# def remove_song_from_favourite(userid, songid): LINE 420
+# def get_artists(): LINE 442
+# def get_songs_by_artist(artist): LINE 472
+# def get_songs_by_tag(tag): LINE 499
+# def login_user(): LINE 526
+# def register_user(): LINE 576
 
 
 
@@ -194,11 +195,13 @@ with GraphDatabase.driver(uri, auth=(user, password)) as driver:
             ]
         }
 
+        print(response_body)
+
         response = jsonify(response_body)
         return response
 
 
-    @app.route("/songs/song/like/<songid>", methods=['GET'])
+    @app.route("/songs/song/like/<songid>", methods=['POST'])
     def like_song(songid):
         with driver.session() as session:
             def session_like_song(tx, songid):
@@ -275,6 +278,8 @@ with GraphDatabase.driver(uri, auth=(user, password)) as driver:
                 } for song in songs
             ]
         }
+
+        #match to check if is in user favourites
 
         response = jsonify(response_body)
         return response

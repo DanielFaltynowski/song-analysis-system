@@ -2,10 +2,17 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext.js';
+import { useNavigate } from 'react-router-dom';
 
 const Navbar = () => {
   const { isLoggedIn, logout, user } = useAuth();
   console.log(user);
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate('/');
+  }
 
   return (
     <nav className="bg-emerald-700 p-4">
@@ -21,7 +28,7 @@ const Navbar = () => {
               <NavLink to={`/user/${user}`}  className="text-white" activeClassName="text-yellow-500">
                 My Songs
               </NavLink>
-              <button className="text-white" onClick={logout}>
+              <button className="text-white" onClick={handleLogout}>
                 Log Out
               </button>
             </>

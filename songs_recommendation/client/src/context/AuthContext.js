@@ -16,6 +16,8 @@ export const AuthProvider = ({ children }) => {
   const logout = () => {
     // Perform logout logic (e.g., clear user credentials, update isLoggedIn state)
     setLoggedIn(false);
+    setUser({});
+
   };
 
   return (

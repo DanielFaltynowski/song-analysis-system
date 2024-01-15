@@ -72,6 +72,7 @@ const SongDetails = () => {
           <Link key={selectedSong.artist} to={`/artists/${selectedSong.artist_id}`}>
             <p className="text-white">{selectedSong.artist}</p>
           </Link>
+          <button className="bg-pink-600 text-white rounded-lg p-4 mt-4">Add to favorites</button>
         </div>
       </div>
 
