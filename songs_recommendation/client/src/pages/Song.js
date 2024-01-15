@@ -5,12 +5,14 @@ import unlikeImage from './unlike.png';
 
 const Song = ({ id, title, artist }) => {
 
-  const likeSong = async () => {
-    console.log('like song');
-  }
+  const handleLike = (e) => {
+    e.stopPropagation()
+    try {
+      const response = axios.post(`http://127.0.0.1:5000/songs/song/like/${id}`)
+      console.log(response)
+    } catch {
 
-  const unlikeSong = async () => {
-    console.log('unlike song');
+    }
   }
 
   return (
@@ -25,10 +27,10 @@ const Song = ({ id, title, artist }) => {
           <p className="text-gray-600">{artist}</p>
 
         </div>
-        <button onClick={likeSong}>
+        <button onClick={handleLike}>
           <img src={heartImage} alt="Heart" className="w-16" />
         </button>
-        <button onClick={unlikeSong}>
+        <button onClick={handleLike}>
           <img src={unlikeImage} alt="unlike" className="w-12" />
         </button>
       </div>
