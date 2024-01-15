@@ -30,7 +30,8 @@ const UserSongs = () => {
         const fetchUserSongs = async () => {
             try {
                 console.log('Fetching user songs...');
-                const { data } = await axios.get(`http://127.0.0.1:5000/songs/logged/${user}`);
+                const { data } = await axios.get(`http://127.0.0.1:5000//user/${user}`);
+                // const { data } = await axios.get(`http://127.0.0.1:5000/songs/logged/${user}`);
                 console.log('User songs:', data);
                 setSongs(fisherYatesShuffle(data.songs));
             } catch (err) {

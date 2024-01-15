@@ -35,7 +35,7 @@ const ArtistDetails = () => {
   }, [id]);
 
   if (loading) {
-    return <div  className='bg-emerald-900 min-h-screen'>Loading...</div>;
+    return <div  className='min-h-screen'>Loading...</div>;
   }
 
   return (

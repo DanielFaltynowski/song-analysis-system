@@ -387,7 +387,24 @@ with GraphDatabase.driver(uri, auth=(user, password)) as driver:
             session.close()
 
         response_body = {
-            "songs": [ { "id": song["id"], "name": song["title"] } for song in songs ]
+            "songs": [
+                {
+                    "id": song["id"],
+                    "title": song["title"],
+                    "likes": song["likes"],
+                    "loves": song["loves"],
+                    "hates": song["hates"],
+                    "compound": song["sentiment_compound"],
+                    "angry": song["emotion_Angry"],
+                    "happy": song["emotion_Happy"],
+                    "surprise": song["emotion_Surprise"],
+                    "sad": song["emotion_Sad"],
+                    "sentiment": song["sentiment_category"],
+                    "views": song["views"],
+                    "artist": song["artist"],
+                    "artist_id": song["artist_id"]
+                } for song in songs
+            ]
         }
 
         print(response_body)
