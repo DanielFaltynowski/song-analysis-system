@@ -15,7 +15,7 @@ const ArtistDetails = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const artistResponse = await axios.get(`http://127.0.0.1:5000/songs/artist/${id}`);
+        const artistResponse = await axios.get(`http://127.0.0.1:5000/songs/artist/${id}`)
         console.log(artistResponse.data)
         console.log(id)
         setArtist(artistResponse.data.id);
@@ -35,7 +35,7 @@ const ArtistDetails = () => {
   }, [id]);
 
   if (loading) {
-    return <div  className='bg-emerald-900 min-h-screen'>Loading...</div>;
+    return <div  className='min-h-screen'>Loading...</div>;
   }
 
   return (
