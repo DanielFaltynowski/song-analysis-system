@@ -1,22 +1,23 @@
 # Song Analysis System 🎵
-System analizujący teksty piosenek z wykorzystaniem algorytmów uczenia maszynowego w celu ich klasyfikacji tematycznej.
+A system for analyzing song lyrics using machine learning algorithms for thematic classification.
 
-## O Projekcie  
-Niniejszy projekt został stworzony w celu zaliczenia przedmiotu „Projekt zespołowy” w semestrze zimowym 2023/2024. Został on zrealizowany wspólnie przez trzyosobowy zespół studentów w składzie: [Zofia Piesik](https://github.com/zoffonek), [Daniel Faltynowski](https://github.com/DanielFaltynowski), [Honorata Kucharska](https://github.com/Honorata7). Celem projektu było zbadanie, czy na podstawie wyłącznie tekstów piosenek algorytmy uczenia maszynowego są w stanie sklasyfikować utwory w taki sposób, aby każdy klaster zawierał tematycznie podobne treści, a jednocześnie różnił się od pozostałych. Dodatkowo stworzono prostą wizualizację wyników w formie dashboardu, który – ze względu na ograniczenia czasowe – nie został w pełni ukończony. Cały proces przetwarzania i klasyfikacji danych został udokumentowany w notatnikach Jupyter, znajdujących się w folderze `data preparing`.
+## About the Project  
+This project was created as part of the course "Team Project" during the winter semester of 2023/2024. It was carried out by a three-person student team consisting of: [Zofia Piesik](https://github.com/zoffonek), [Daniel Faltynowski](https://github.com/DanielFaltynowski), [Honorata Kucharska](https://github.com/Honorata7).  
+The goal of the project was to examine whether, based solely on song lyrics, machine learning algorithms are able to classify songs in such a way that each cluster contains thematically similar content, while at the same time being distinct from the others. Additionally, a simple visualization of the results in the form of a dashboard was created, which—due to time constraints—was not fully completed. The entire data processing and classification pipeline was documented in Jupyter notebooks, located in the `data_preparing` folder.
 
-## Zawartość (folder `data_preparing`)
+## Contents (folder `data_preparing`)
 ### Jupyter Notebooks:  
-- ``01_preparing_dataset_1.ipynb``
-- ``02_preparing_dataset_2.ipynb``
-- ``03_clustering.ipynb``
-- ``04_clustering-analysis.ipynb``
+- ``01_preparing_dataset_1.ipynb``  
+- ``02_preparing_dataset_2.ipynb``  
+- ``03_clustering.ipynb``  
+- ``04_clustering-analysis.ipynb``  
 
-## Poruszane Zagadnienia 
+## Covered Topics  
 
-- Statystyka opisowa. 
-- Preprocessing danych z użyciem biblioteki `pandas`. 
-- Analiza sentymentu.
-- Inynieria cech.
-- Wizualizacja danych.
-- Klasteryzacja przetworzonego zbioru.
-- Analiza wyników. 
+- Descriptive statistics.  
+- Data preprocessing with the `pandas` library.  
+- Sentiment analysis.  
+- Feature engineering.  
+- Data visualization.  
+- Clustering of the processed dataset.  
+- Results analysis.  
